@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="fill_parent">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -31,6 +32,16 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="Request Lcation" />
+
+
+        <Button
+            android:id="@+id/p_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="publish"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="372dp" />
 
 
     </RelativeLayout>

@@ -1,18 +1,20 @@
 package com.example.simulation.Activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -22,6 +24,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.simulation.R;
+import com.example.simulation.util.MessagePublisher;
+import com.example.simulation.util.NetworkChangeReceiver;
 
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -39,11 +43,13 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem item2;
     private Button b;
     private TextView t;
-
+    Button p_check;
 
     //Location
     private LocationManager locationManager;
     private LocationListener listener;
+    private BroadcastReceiver networkChangeReceiver;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,10 +58,21 @@ public class MainActivity extends AppCompatActivity {
         macAddress = getMacAddr();
         t = findViewById(R.id.textView);
         b = findViewById(R.id.button);
+        p_check = findViewById(R.id.p_check);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+        p_check.setOnClickListener(new View.OnClickListener() {
+            MessagePublisher msgpb = new MessagePublisher(getApplicationContext());
 
+            @Override
+            public void onClick(View v) {
+                msgpb.publish();
+            }
+        });
+
+
+        networkChangeReceiver = new NetworkChangeReceiver();
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -96,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void configure_button() {
         // first check for permissions
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}
                         , 10);
             }
@@ -107,7 +124,11 @@ public class MainActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //noinspection MissingPermission
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                }
                 locationManager.requestLocationUpdates("gps", 5000, 0, listener);
             }
         });
@@ -115,6 +136,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangeReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        unregisterReceiver(networkChangeReceiver);
+    }
 
     //----------------Creating Options_menu---------------------------------------------------------//
 
