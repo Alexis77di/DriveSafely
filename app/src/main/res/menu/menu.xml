@@ -1,0 +1,38 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.simulation.Activities.HomeActivity">
+
+
+    <item
+        android:id="@+id/action_built"
+        android:icon="@drawable/ic_build_black_24dp"
+        android:title=""
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/menu_AndroidSettings"
+                android:background="@color/colorBackround"
+                android:icon="@drawable/ic_brightness_high_black_24dp"
+                android:title="@string/android_settings"
+                app:showAsAction="ifRoom" />
+
+            <item
+                android:id="@+id/menu_mqtt_settings"
+                android:icon="@drawable/ic_brightness_high_black_24dp"
+                android:title="@string/mqtt_broker_settings"
+                app:showAsAction="ifRoom" />
+
+            <item
+                android:id="@+id/menu_Exit"
+                android:icon="@drawable/ic_arrow_forward_black_24dp"
+                android:title="@string/exit"
+                app:showAsAction="ifRoom" />
+
+
+        </menu>
+
+    </item>
+
+</menu>
