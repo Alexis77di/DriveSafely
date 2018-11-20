@@ -2,19 +2,19 @@ package com.example.simulation.Activities;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.simulation.Listeners.MyLocationListener;
 import com.example.simulation.R;
 import com.example.simulation.util.MessagePublisher;
 import com.example.simulation.util.NetworkChangeReceiver;
@@ -35,20 +36,23 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
 
-    public static String Port_Ip = "tcp://192.168.1.2:1883"; //by default
-
     public static String macAddress;
-    Intent intent1;
     private MenuItem item;
     private MenuItem item2;
+
     private Button b;
     private TextView t;
+
     Button p_check;
 
-    //Location
+
+    //--Location--//
     private LocationManager locationManager;
-    private LocationListener listener;
+    private LocationListener locationListener;
+    private SensorManager SM;
+
     private BroadcastReceiver networkChangeReceiver;
+
 
 
     @Override
@@ -60,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         b = findViewById(R.id.button);
         p_check = findViewById(R.id.p_check);
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         p_check.setOnClickListener(new View.OnClickListener() {
             MessagePublisher msgpb = new MessagePublisher(getApplicationContext());
@@ -71,86 +74,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         networkChangeReceiver = new NetworkChangeReceiver();
-        listener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                t.append("\n " + location.getLongitude() + " " + location.getLatitude());
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(i);
-            }
-        };
-
-        configure_button();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 10:
-                configure_button();
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void configure_button() {
-        // first check for permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}
-                        , 10);
-            }
-            return;
-        }
-        // this code won't execute IF permissions are not allowed, because in the line above there is return statement.
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                }
-                locationManager.requestLocationUpdates("gps", 5000, 0, listener);
-            }
-        });
 
 
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        //----------------Listener for the GPS Location-----------------------//
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new MyLocationListener(getApplicationContext());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
+                }, 10);
+            }
+
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+
+        //--Internet Connectivity--//
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeReceiver, intentFilter);
+
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         unregisterReceiver(networkChangeReceiver);
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
+                }, 10);
+            }
+
+            return;
+        }
+        locationManager.removeUpdates(locationListener);
     }
+
+
 
     //----------------Creating Options_menu---------------------------------------------------------//
 
