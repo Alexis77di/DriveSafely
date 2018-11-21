@@ -23,10 +23,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.simulation.Listeners.AccelerometerListener;
 import com.example.simulation.Listeners.MyLocationListener;
 import com.example.simulation.R;
 import com.example.simulation.util.MessagePublisher;
+import com.example.simulation.util.MqttSubscriber;
 import com.example.simulation.util.NetworkChangeReceiver;
+
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -49,9 +53,17 @@ public class MainActivity extends AppCompatActivity {
     //--Location--//
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private SensorManager SM;
 
     private BroadcastReceiver networkChangeReceiver;
+
+    //--Accelerometer--//
+    private int threshold_x_axis;
+    private int threshold_y_axis;
+    private int threshold_z_axis;
+    private AccelerometerListener accelero;
+
+    //--Our Sensor Manager--//
+    private SensorManager SM;
 
 
 
@@ -61,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
         macAddress = getMacAddr();
         t = findViewById(R.id.textView);
-        b = findViewById(R.id.button);
         p_check = findViewById(R.id.p_check);
 
 
@@ -75,6 +86,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         networkChangeReceiver = new NetworkChangeReceiver();
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    MqttSubscriber subscriber = new MqttSubscriber(getApplicationContext(), "MQTT Examples", "tcp://localhost:1883");
+                    subscriber.connect();
+                    subscriber.subscribe();
+                    // subscriber.disconnect();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
 
@@ -88,13 +117,6 @@ public class MainActivity extends AppCompatActivity {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener(getApplicationContext());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
@@ -112,22 +134,33 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(networkChangeReceiver, intentFilter);
 
 
+        //--------------Create our Sensor Manager----------------
+        SM = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+
+        //-----------Assign TextView-----------
+        TextView[] textTable = new TextView[3];
+        textTable[0] = findViewById(R.id.xText);
+        textTable[1] = findViewById(R.id.yText);
+        textTable[2] = findViewById(R.id.zText);
+
+
+        Context context = getApplicationContext();
+
+        //-----------------Accelerometer Sensor-----------------
+        accelero = new AccelerometerListener(SM, threshold_x_axis, threshold_y_axis, threshold_z_axis, textTable, context);
+
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        accelero.unregister(SM);
         unregisterReceiver(networkChangeReceiver);
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
@@ -231,6 +264,26 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ex) {
         }
         return "02:00:00:00:00:00"; // <Android 6.0.
+    }
+
+
+    //-----------This function is used in order to Find out if the GPS of an Android device is enabled------------
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
 

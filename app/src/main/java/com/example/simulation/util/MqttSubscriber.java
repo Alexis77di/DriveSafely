@@ -2,74 +2,72 @@ package com.example.simulation.util;
 
 import android.content.Context;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
-public class MqttSubscriber implements MqttCallback {
-    public static boolean flag_message = false;
-    public String topic;
-    public Context context;
+import java.util.Date;
 
-    public void main(String topic, String port_ip, Context context) {
+public class MqttSubscriber {
+    private final String topic;
+    private final MqttAndroidClient sampleClient;
+
+    public MqttSubscriber(Context context, String topic, String broker) {
 
         this.topic = topic;
-        this.context = context;
 
-
-        int qos = 2;
-        String broker = port_ip;
         String clientId = "ΜyClient2Android";
         MemoryPersistence persistence = new MemoryPersistence();
 
-        try {
-            MqttAsyncClient sampleClient = new MqttAsyncClient(broker, clientId, persistence);
-            MqttConnectOptions connOpts = new MqttConnectOptions();
-            connOpts.setWill("Test/clienterrors", "crashed".getBytes(), 2, false);
-            connOpts.setCleanSession(true);
-            sampleClient.setCallback(new MqttSubscriber());
-            System.out.println("Connecting to broker: " + broker);
-            sampleClient.connect(connOpts);
-            System.out.println("Connected");
-            Thread.sleep(1000);
-            sampleClient.subscribe(topic, qos);
-            System.out.println("Subscribed");
-            //  sampleClient.disconnect();
-            //System.out.println("Disconnected");
 
-        } catch (Exception me) {
-            if (me instanceof MqttException) {
-                System.out.println("reason " + ((MqttException) me).getReasonCode());
+        sampleClient = new MqttAndroidClient(context, broker, clientId, persistence);
+        sampleClient.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+
             }
-            System.out.println("msg " + me.getMessage());
-            System.out.println("loc " + me.getLocalizedMessage());
-            System.out.println("cause " + me.getCause());
-            System.out.println("excep " + me);
-            me.printStackTrace();
-        }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) {
+                String time = new Date().toString();
+                System.out.println("Time:\t" + time + "Topic\t" + topic + "Message:\t" + new String(message.getPayload()) + " Qos:\t" + message.getQos());
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
 
     }
 
-    @Override
-    public void connectionLost(Throwable cause) {
-        System.err.println("connection lost");
+    public void connect() throws MqttException, InterruptedException {
+
+
+        MqttConnectOptions connOpts = new MqttConnectOptions();
+        connOpts.setCleanSession(true);
+        System.out.println("Connecting to broker");
+        sampleClient.connect(connOpts);
+        System.out.println("Connected");
+        Thread.sleep(1000);
+
     }
 
-    @Override
-    public void messageArrived(String topic, MqttMessage message) {
-        System.out.println("topic: " + topic);
-        final String mes = new String(message.getPayload());
-        System.out.println("message: " + mes);
-        flag_message = true;
-        System.out.println(flag_message + "--------------------");
+    public void subscribe() throws MqttException {
+        int qos = 2;
+        sampleClient.subscribe(topic, qos);
+        System.out.println("Subscribed");
+
+
     }
 
-    @Override
-    public void deliveryComplete(IMqttDeliveryToken token) {
-        System.err.println("delivery complete");
+    public void disconnect() throws MqttException {
+        sampleClient.disconnect();
+        System.out.println("Disconnected");
     }
+
 }

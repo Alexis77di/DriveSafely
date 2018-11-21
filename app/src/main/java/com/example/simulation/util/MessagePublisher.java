@@ -24,7 +24,7 @@ public class MessagePublisher {
         final String topic = "MQTT Examples";
         final String content = "Message from MqttPublishSample";
         final int qos = 2;
-        String broker = "tcp://192.168.1.8:1883";
+        String broker = "tcp://192.168.1.3:1883";
         String clientId = "JavaSample";
         MemoryPersistence persistence = new MemoryPersistence();
 

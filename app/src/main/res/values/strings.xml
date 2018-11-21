@@ -10,4 +10,13 @@
     <string name="mqtt_broker_settings">MQTT broker (settings)</string>
     <string name="settings">Settings</string>
     <string name="exit">Exit</string>
+    <string name="m_s2">m/s^2</string>
+    <string name="Accelerometer">Accelerometer</string>
+    <string name="X">X</string>
+    <string name="Y">Y</string>
+    <string name="Z">Z</string>
+    <string name="exitDB">Exit</string>
+    <string name="questionDB">Are you sure you want to EXIT this App?</string>
+    <string name="yesDB">YES</string>
+    <string name="noDB">NO</string>
 </resources>
