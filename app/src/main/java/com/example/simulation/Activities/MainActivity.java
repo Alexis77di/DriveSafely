@@ -1,6 +1,7 @@
 package com.example.simulation.Activities;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,12 +9,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.simulation.Listeners.AccelerometerListener;
 import com.example.simulation.Listeners.MyLocationListener;
@@ -49,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView TextView7;
 
     Button p_check;
+
+    private static final int CAMERA_REQUEST = 123;
+    //--FlashLight--//
+    Button btnFlashLight;
+    boolean hasCameraFlash = false;
 
 
     //--Location--//
@@ -108,6 +119,38 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
+
+        //---------FlashLight Event--------------------------------------------//
+
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+
+        hasCameraFlash = getPackageManager().
+                hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+
+        btnFlashLight = findViewById(R.id.btnFlashLightToggle);
+
+        btnFlashLight.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                if (hasCameraFlash) {
+                    if (btnFlashLight.getText().toString().contains("ON")) {
+                        btnFlashLight.setText("FLASHLIGHT OFF");
+                        flashLightOff();
+                    } else {
+                        btnFlashLight.setText("FLASHLIGHT ON");
+                        flashLightOn();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "No flash available on your device",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
 
     }
 
@@ -287,6 +330,46 @@ public class MainActivity extends AppCompatActivity {
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+
+    //-------------This function is used in order to unable the flashlight----------//
+    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void flashLightOn() {
+        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
+        try {
+            String cameraId = cameraManager.getCameraIdList()[0];
+            cameraManager.setTorchMode(cameraId, true);
+        } catch (CameraAccessException e) {
+        }
+    }
+
+
+    //-------------This function is used in order to disable the flashlight----------//
+    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void flashLightOff() {
+        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        try {
+            String cameraId = cameraManager.getCameraIdList()[0];
+            cameraManager.setTorchMode(cameraId, false);
+        } catch (CameraAccessException e) {
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_REQUEST:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    hasCameraFlash = getPackageManager().
+                            hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+                }
+                break;
+        }
     }
 
 
