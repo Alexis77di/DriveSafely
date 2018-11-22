@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button b;
     private TextView t;
+    private TextView TextView7;
 
     Button p_check;
 
@@ -66,13 +67,17 @@ public class MainActivity extends AppCompatActivity {
     private SensorManager SM;
 
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
         macAddress = getMacAddr();
+
         t = findViewById(R.id.textView);
+
+        TextView7 = findViewById(R.id.TextView7);
+
         p_check = findViewById(R.id.p_check);
 
 
@@ -107,34 +112,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
 
+
         //----------------Listener for the GPS Location-----------------------//
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new MyLocationListener(getApplicationContext());
+        locationListener = new MyLocationListener(getApplicationContext(), TextView7);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
                 }, 10);
             }
-
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
 
-        //--Internet Connectivity--//
+        //-------------------Internet Connectivity------------------------------------//
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeReceiver, intentFilter);
 
 
-        //--------------Create our Sensor Manager----------------
+        //---------------------Create our Sensor Manager----------------------------//
         SM = (SensorManager) getSystemService(SENSOR_SERVICE);
 
 
@@ -171,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
         }
         locationManager.removeUpdates(locationListener);
     }
-
 
 
     //----------------Creating Options_menu---------------------------------------------------------//

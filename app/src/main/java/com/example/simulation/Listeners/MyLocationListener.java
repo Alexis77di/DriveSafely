@@ -4,35 +4,28 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import static android.content.ContentValues.TAG;
 
 public class MyLocationListener implements LocationListener {
     private Context context;
     private Double mylatitude;
     private Double mylongtitude;
+    private TextView textView;
 
-    public MyLocationListener(Context context) {
+    public MyLocationListener(Context context, TextView textView) {
         this.context = context;
+        this.textView = textView;
     }
-
 
     @Override
     public void onLocationChanged(Location loc) {
-        if (loc != null) {
+
             mylatitude = loc.getLatitude();
             mylongtitude = loc.getLongitude();
+        textView.setText("Longtitude: " + mylongtitude + "\n" + "Latitude: " + mylatitude);
 
-            /*Toast.makeText(context,
-                    "Location changed: Lat: " + mylatitude + " Lng: "
-                            + mylongtitude, Toast.LENGTH_SHORT).show();*/
-            String longitude = "Longitude______: " + mylongtitude;
-            Log.v(TAG, longitude);
-            String latitude = "Latitude________: " + mylatitude;
-            Log.v(TAG, latitude);
-        }
+
     }
 
     @Override
