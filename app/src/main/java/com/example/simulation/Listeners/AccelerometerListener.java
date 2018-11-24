@@ -13,13 +13,14 @@ public class AccelerometerListener implements SensorEventListener {
     public int threshold_y_axis;
     public int threshold_z_axis;
     public String sensor_values = "";
+    public String sensor_name;
     private TextView[] textTable;
     private Context context;
 
     public AccelerometerListener(SensorManager SM, int threshold_x_axis, int threshold_y_axis, int threshold_z_axis, TextView[] textTable, Context context) {
 
         Sensor mySensor = SM.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
+        sensor_name = ("Accelerometer Sensor");
         //Register sensor listener
         SM.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_NORMAL);
 
@@ -48,6 +49,10 @@ public class AccelerometerListener implements SensorEventListener {
 
     public String getSensorValue() {
         return sensor_values;
+    }
+
+    public String getSensorName() {
+        return sensor_name;
     }
 
     @Override

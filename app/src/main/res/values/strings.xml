@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Drive Safely</string>
-    <string name="android_settings">Android Settings</string>
     <string name="homeLabel">Lets Start</string>
     <string name="mainLabel">Speed down..Eyes up </string>
     <string name="info">DriveSafely is an application that helps you to avoid accidents. </string>
@@ -12,6 +11,7 @@
     <string name="exit">Exit</string>
     <string name="m_s2">m/s^2</string>
     <string name="Accelerometer">Accelerometer</string>
+    <string name="Mqtt_Details">Mqtt Details</string>
     <string name="X">X</string>
     <string name="Y">Y</string>
     <string name="Z">Z</string>
@@ -19,4 +19,5 @@
     <string name="questionDB">Are you sure you want to EXIT this App?</string>
     <string name="yesDB">YES</string>
     <string name="noDB">NO</string>
+
 </resources>

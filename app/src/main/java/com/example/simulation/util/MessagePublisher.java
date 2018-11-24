@@ -14,14 +14,16 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 public class MessagePublisher {
 
     private final Context context;
+    private final String topic;
 
-    public MessagePublisher(Context context) {
+    public MessagePublisher(Context context, String topic) {
         this.context = context;
+        this.topic = topic;
     }
 
 
     public void publish() {
-        final String topic = "MQTT Examples";
+        //final String topic;
         final String content = "Message from MqttPublishSample";
         final int qos = 2;
         String broker = "tcp://192.168.1.3:1883";

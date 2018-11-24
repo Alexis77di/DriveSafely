@@ -12,16 +12,16 @@
 
         <menu>
             <item
-                android:id="@+id/menu_AndroidSettings"
-                android:background="@color/colorBackround"
-                android:icon="@drawable/ic_brightness_high_black_24dp"
-                android:title="@string/android_settings"
-                app:showAsAction="ifRoom" />
-
-            <item
                 android:id="@+id/menu_mqtt_settings"
                 android:icon="@drawable/ic_brightness_high_black_24dp"
                 android:title="@string/mqtt_broker_settings"
+                app:showAsAction="ifRoom" />
+
+            <item
+                android:id="@+id/menu_Mqtt_Details"
+                android:background="@color/colorBackround"
+                android:icon="@drawable/ic_lock_outline_black_24dp"
+                android:title="@string/Mqtt_Details"
                 app:showAsAction="ifRoom" />
 
             <item

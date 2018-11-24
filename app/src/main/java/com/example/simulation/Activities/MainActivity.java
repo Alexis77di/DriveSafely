@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
@@ -26,6 +25,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,8 +46,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    public static String Port_Ip = "tcp://192.168.1.3:1883"; //by default
     public static String macAddress;
+    public static String topic;
     private MenuItem item;
     private MenuItem item2;
 
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     //--Location--//
     private LocationManager locationManager;
-    private LocationListener locationListener;
+    private MyLocationListener locationListener;
 
     private BroadcastReceiver networkChangeReceiver;
 
@@ -77,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     //--Our Sensor Manager--//
     private SensorManager SM;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,24 +90,12 @@ public class MainActivity extends AppCompatActivity {
 
         TextView7 = findViewById(R.id.TextView7);
 
-        p_check = findViewById(R.id.p_check);
-
-
-        p_check.setOnClickListener(new View.OnClickListener() {
-            MessagePublisher msgpb = new MessagePublisher(getApplicationContext());
-
-            @Override
-            public void onClick(View v) {
-                msgpb.publish();
-            }
-        });
 
         networkChangeReceiver = new NetworkChangeReceiver();
 
 
         new Thread(new Runnable() {
-            @Override
-            public void run() {
+            void run() {
                 try {
                     MqttSubscriber subscriber = new MqttSubscriber(getApplicationContext(), "MQTT Examples", "tcp://localhost:1883");
                     subscriber.connect();
@@ -149,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
 
 
     }
@@ -197,6 +185,20 @@ public class MainActivity extends AppCompatActivity {
         //-----------------Accelerometer Sensor-----------------
         accelero = new AccelerometerListener(SM, threshold_x_axis, threshold_y_axis, threshold_z_axis, textTable, context);
 
+        topic = "MacAddress = " + macAddress + "/" + accelero.getSensorName() + "/";
+
+        p_check = findViewById(R.id.p_check);
+
+
+        p_check.setOnClickListener(new View.OnClickListener() {
+            MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
+
+            @Override
+            public void onClick(View v) {
+                msgpb.publish();
+            }
+        });
+
 
     }
 
@@ -234,12 +236,33 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.menu_AndroidSettings:
-                Intent toy1 = new Intent(MainActivity.this, SettingsActivity.class);
+            case R.id.menu_mqtt_settings:
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                alertDialog.setTitle("Connection Settings");
+                alertDialog.setMessage("Please enter Ip/PortQ");
+
+                final EditText input = new EditText(MainActivity.this);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setText("tcp://192.168.1.2:1883");
+                input.setLayoutParams(lp);
+                alertDialog.setView(input);
+
+                alertDialog.setNeutralButton("Save", new DialogInterface.OnClickListener() {
+
+                    // click listener on the alert box
+                    public void onClick(DialogInterface dialog, int which) {
+                        Port_Ip = input.getText().toString();
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog.show();
+                break;
+            case R.id.menu_Mqtt_Details:
+                Intent toy1 = new Intent(MainActivity.this, MqttDetailsActivity.class);
                 startActivity(toy1);
                 finish();
-                break;
-            case R.id.menu_mqtt_settings:
                 break;
             case R.id.menu_Exit:
                 AlertDialog.Builder ad = new AlertDialog.Builder(this);
