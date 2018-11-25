@@ -21,11 +21,9 @@ public class MyLocationListener implements LocationListener {
     @Override
     public void onLocationChanged(Location loc) {
 
-            mylatitude = loc.getLatitude();
-            mylongtitude = loc.getLongitude();
+        mylatitude = loc.getLatitude();
+        mylongtitude = loc.getLongitude();
         textView.setText("Longtitude: " + mylongtitude + "\n" + "Latitude: " + mylatitude);
-
-
     }
 
     @Override
@@ -46,14 +44,10 @@ public class MyLocationListener implements LocationListener {
     }
 
     public Double getDevLatitude() {
-        if (mylatitude != null)
-            return mylatitude;
-        return 0.0;
+        return mylatitude;
     }
 
     public Double getDevLongtitude() {
-        if (mylongtitude != null)
-            return mylongtitude;
-        return 0.0;
+        return mylongtitude;
     }
 }

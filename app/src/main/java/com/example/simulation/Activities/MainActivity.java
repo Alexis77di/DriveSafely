@@ -49,17 +49,15 @@ public class MainActivity extends AppCompatActivity {
     public static String Port_Ip = "tcp://192.168.1.3:1883"; //by default
     public static String macAddress;
     public static String topic;
-    private MenuItem item;
-    private MenuItem item2;
 
-    private Button b;
     private TextView t;
     private TextView TextView7;
 
     Button p_check;
 
-    private static final int CAMERA_REQUEST = 123;
+
     //--FlashLight--//
+    private static final int CAMERA_REQUEST = 123;
     Button btnFlashLight;
     boolean hasCameraFlash = false;
 
@@ -67,7 +65,10 @@ public class MainActivity extends AppCompatActivity {
     //--Location--//
     private LocationManager locationManager;
     private MyLocationListener locationListener;
+    private Double latitude;
+    private Double longtitude;
 
+    //--Connectivity--//
     private BroadcastReceiver networkChangeReceiver;
 
     //--Accelerometer--//
@@ -95,11 +96,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         new Thread(new Runnable() {
-            void run() {
+            public void run() {
                 try {
                     MqttSubscriber subscriber = new MqttSubscriber(getApplicationContext(), "MQTT Examples", "tcp://localhost:1883");
                     subscriber.connect();
-                    subscriber.subscribe();
+                    //subscriber.subscribe();
                     // subscriber.disconnect();
                 } catch (MqttException e) {
                     e.printStackTrace();
@@ -185,7 +186,12 @@ public class MainActivity extends AppCompatActivity {
         //-----------------Accelerometer Sensor-----------------
         accelero = new AccelerometerListener(SM, threshold_x_axis, threshold_y_axis, threshold_z_axis, textTable, context);
 
-        topic = "MacAddress = " + macAddress + "/" + accelero.getSensorName() + "/";
+        latitude = locationListener.getDevLatitude();
+        longtitude = locationListener.getDevLongtitude();
+
+        System.out.println("latitude = " + latitude + "longtitude = " + longtitude);
+
+        topic = "MacAddress = " + macAddress + "/";
 
         p_check = findViewById(R.id.p_check);
 
