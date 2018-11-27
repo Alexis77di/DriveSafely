@@ -101,26 +101,6 @@
 
 
         <Button
-            android:id="@+id/p_check"
-            android:layout_width="162dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginStart="219dp"
-            android:layout_marginLeft="219dp"
-            android:layout_marginTop="227dp"
-            android:layout_marginEnd="3dp"
-            android:layout_marginRight="3dp"
-            android:text="publish"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="372dp" />
-
-
-        <Button
             android:id="@+id/btnFlashLightToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

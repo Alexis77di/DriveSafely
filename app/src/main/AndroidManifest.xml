@@ -37,6 +37,10 @@
             android:name="com.example.simulation.Activities.HomeActivity"
             android:label="@string/homeLabel"
             android:noHistory="true" />
+        <activity
+            android:name="com.example.simulation.Activities.MqttDetailsActivity"
+            android:label="@string/details"
+            android:noHistory="true" />
 
         <receiver
             android:name=".util.NetworkChangeReceiver"

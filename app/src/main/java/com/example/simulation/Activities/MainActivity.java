@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView t;
     private TextView TextView7;
 
-    Button p_check;
 
 
     //--FlashLight--//
@@ -189,42 +188,25 @@ public class MainActivity extends AppCompatActivity {
         latitude = locationListener.getDevLatitude();
         longtitude = locationListener.getDevLongtitude();
 
-        System.out.println("latitude = " + latitude + "longtitude = " + longtitude);
 
-        topic = "MacAddress = " + macAddress + "/";
+        topic = "MacAddress = " + macAddress + "/" + accelero.getSensorValue() + "/" + locationListener.getDevLatitude() + "/" + locationListener.getDevLongtitude();
 
-        p_check = findViewById(R.id.p_check);
-
-
-        p_check.setOnClickListener(new View.OnClickListener() {
-            MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
-
-            @Override
-            public void onClick(View v) {
-                msgpb.publish();
+        new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
+                    msgpb.publish();
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        });
+        }).start();
 
 
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        accelero.unregister(SM);
-        unregisterReceiver(networkChangeReceiver);
-
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
-                }, 10);
-            }
-
-            return;
-        }
-        locationManager.removeUpdates(locationListener);
     }
 
 
@@ -266,8 +248,8 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
                 break;
             case R.id.menu_Mqtt_Details:
-                Intent toy1 = new Intent(MainActivity.this, MqttDetailsActivity.class);
-                startActivity(toy1);
+                Intent intent = new Intent(MainActivity.this, MqttDetailsActivity.class);
+                startActivity(intent);
                 finish();
                 break;
             case R.id.menu_Exit:
