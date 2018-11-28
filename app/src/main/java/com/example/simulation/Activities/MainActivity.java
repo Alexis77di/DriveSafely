@@ -47,6 +47,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static String Port_Ip = "tcp://192.168.1.3:1883"; //by default
+    public int rate = 3000; //by default
     public static String macAddress;
     public static String topic;
 
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                     MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
                     msgpb.publish();
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(rate);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -248,9 +249,26 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
                 break;
             case R.id.menu_Mqtt_Details:
-                Intent intent = new Intent(MainActivity.this, MqttDetailsActivity.class);
-                startActivity(intent);
-                finish();
+                AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(MainActivity.this);
+                alertDialog1.setTitle("Mqtt Rate Settings");
+                alertDialog1.setMessage("Please enter the rate you want");
+                final EditText input1 = new EditText(MainActivity.this);
+                LinearLayout.LayoutParams r = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input1.setText("3000");
+                input1.setLayoutParams(r);
+                alertDialog1.setView(input1);
+
+                alertDialog1.setNeutralButton("Save", new DialogInterface.OnClickListener() {
+
+                    // click listener on the alert box
+                    public void onClick(DialogInterface dialog, int which) {
+                        rate = Integer.parseInt(input1.getText().toString());
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog1.show();
                 break;
             case R.id.menu_Exit:
                 AlertDialog.Builder ad = new AlertDialog.Builder(this);
