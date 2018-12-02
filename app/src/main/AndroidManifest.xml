@@ -38,7 +38,7 @@
             android:label="@string/homeLabel"
             android:noHistory="true" />
         <activity
-            android:name="com.example.simulation.Activities.MqttDetailsActivity"
+            android:name="com.example.simulation.Activities.ConnectionActivity"
             android:label="@string/details"
             android:noHistory="true" />
 

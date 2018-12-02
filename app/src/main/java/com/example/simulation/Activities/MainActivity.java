@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -55,11 +56,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView TextView7;
 
 
-
     //--FlashLight--//
     private static final int CAMERA_REQUEST = 123;
     Button btnFlashLight;
     boolean hasCameraFlash = false;
+
+    //--Sound--//
+    Button btnSound;
+    private int soundId;
 
 
     //--Location--//
@@ -141,6 +145,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+//        //---------------------------Sound Event-------------------------//
+//        btnSound = findViewById(R.id.btnSound);
+//        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
+//        btnSound.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mp.start();
+//
+//            }
+//        });
+
+
     }
 
 
@@ -170,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(networkChangeReceiver, intentFilter);
 
 
+
         //---------------------Create our Sensor Manager----------------------------//
         SM = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -192,21 +209,26 @@ public class MainActivity extends AppCompatActivity {
 
         topic = "MacAddress = " + macAddress + "/" + accelero.getSensorValue() + "/" + locationListener.getDevLatitude() + "/" + locationListener.getDevLongtitude();
 
-        new Thread(new Runnable() {
+
+        final Handler handlerP = new Handler();
+        handlerP.postDelayed(new Runnable() {
+            @Override
             public void run() {
-                while (true) {
-                    MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
-                    msgpb.publish();
-                    try {
-                        Thread.sleep(rate);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
+                msgpb.publish();
+                handlerP.postDelayed(this, rate);
             }
-        }).start();
+        }, 1500);
 
 
+//        final Handler handlerS = new Handler();
+//        handlerS.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                MqttSub subscriber = new MqttSub();
+//                subscriber.main();
+//            }
+//        },1500);
 
     }
 
@@ -225,6 +247,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.connection_settings:
+                Intent toy1 = new Intent(MainActivity.this, ConnectionActivity.class);
+                startActivity(toy1);
+                finish();
+                break;
             case R.id.menu_mqtt_settings:
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                 alertDialog.setTitle("Connection Settings");
@@ -403,5 +430,3 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
-
-

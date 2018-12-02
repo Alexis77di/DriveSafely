@@ -30,7 +30,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             if (connected) {
                 Toast.makeText(context, "connected!", Toast.LENGTH_SHORT).show();
             } else {
-
                 Toast.makeText(context, "No internet connection!", Toast.LENGTH_SHORT).show();
             }
         }

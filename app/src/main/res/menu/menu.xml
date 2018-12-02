@@ -12,6 +12,12 @@
 
         <menu>
             <item
+                android:id="@+id/connection_settings"
+                android:icon="@drawable/ic_view_list_black_24dp"
+                android:title="@string/connection_settings"
+                app:showAsAction="ifRoom" />
+
+            <item
                 android:id="@+id/menu_mqtt_settings"
                 android:icon="@drawable/ic_brightness_high_black_24dp"
                 android:title="@string/mqtt_broker_settings"

@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Drive Safely</string>
     <string name="mqtt_details">One topic per 3 seconds...</string>
+    <string name="connection_settings">Connection Settings</string>
     <string name="homeLabel">Lets Start</string>
     <string name="mainLabel">Speed down..Eyes up </string>
-    <string name="details">Details</string>
+    <string name="details">Connection Settings</string>
     <string name="MqttInfo">Mqtt Info</string>
     <string name="info">DriveSafely is an application that helps you to avoid accidents. </string>
     <string name="readyToStart">DriveSafely App is ready to start!</string>

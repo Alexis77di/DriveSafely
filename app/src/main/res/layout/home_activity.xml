@@ -72,8 +72,8 @@
         android:layout_above="@+id/startText"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginLeft="22dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
         android:layout_marginBottom="55dp"
         app:srcCompat="@mipmap/welcomescreen"
         tools:ignore="ContentDescription" />
