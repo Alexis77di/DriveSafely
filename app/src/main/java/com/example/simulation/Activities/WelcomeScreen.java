@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.simulation.R;
 
+//--This is thw first activity--//
+//--Shows this action for 2 seconds--//
+//Goes to next screen(activity) automatically--//
+
 public class WelcomeScreen extends AppCompatActivity {
 
     @Override

@@ -48,7 +48,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static String Port_Ip = "tcp://192.168.1.3:1883"; //by default
-    public int rate = 3000; //by default
+    public int rate = 5000; //by default
     public static String macAddress;
     public static String topic;
 
@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
     //--Location--//
     private LocationManager locationManager;
     private MyLocationListener locationListener;
-    private Double latitude;
-    private Double longtitude;
 
     //--Connectivity--//
     private BroadcastReceiver networkChangeReceiver;
@@ -99,20 +97,7 @@ public class MainActivity extends AppCompatActivity {
         networkChangeReceiver = new NetworkChangeReceiver();
 
 
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    MqttSubscriber subscriber = new MqttSubscriber(getApplicationContext(), "MQTT Examples", "tcp://localhost:1883");
-                    subscriber.connect();
-                    //subscriber.subscribe();
-                    // subscriber.disconnect();
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+
 
 
         //---------FlashLight Event--------------------------------------------//
@@ -203,10 +188,6 @@ public class MainActivity extends AppCompatActivity {
         //-----------------Accelerometer Sensor-----------------
         accelero = new AccelerometerListener(SM, threshold_x_axis, threshold_y_axis, threshold_z_axis, textTable, context);
 
-        latitude = locationListener.getDevLatitude();
-        longtitude = locationListener.getDevLongtitude();
-
-
         topic = "MacAddress = " + macAddress + "/" + accelero.getSensorValue() + "/" + locationListener.getDevLatitude() + "/" + locationListener.getDevLongtitude();
 
 
@@ -221,6 +202,22 @@ public class MainActivity extends AppCompatActivity {
         }, 1500);
 
 
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    MqttSubscriber subscriber = new MqttSubscriber(getApplicationContext(), "MQTT Examples", "tcp://localhost:1883");
+                    subscriber.connect();
+                    //subscriber.subscribe();
+                    // subscriber.disconnect();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
 //        final Handler handlerS = new Handler();
 //        handlerS.postDelayed(new Runnable() {
 //            @Override
@@ -230,6 +227,12 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        },1500);
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(networkChangeReceiver);
     }
 
 
@@ -283,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams r = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
-                input1.setText("3000");
+                input1.setText("5000");
                 input1.setLayoutParams(r);
                 alertDialog1.setView(input1);
 

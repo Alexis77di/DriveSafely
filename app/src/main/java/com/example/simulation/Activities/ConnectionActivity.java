@@ -1,6 +1,5 @@
 package com.example.simulation.Activities;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,7 +21,8 @@ public class ConnectionActivity extends AppCompatActivity {
         open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openWifiSettings();
+                //Intent intent=new Intent(Settings.ACTION_WIFI_SETTINGS);
+                //startActivity(intent);
             }
         });
     }
@@ -35,16 +35,6 @@ public class ConnectionActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(ConnectionActivity.this, MainActivity.class));
-    }
-
-    public void openWifiSettings() {
-
-        final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
-        intent.setComponent(cn);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
     }
 
 

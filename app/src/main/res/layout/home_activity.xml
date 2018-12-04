@@ -9,16 +9,16 @@
     tools:context="com.example.simulation.Activities.HomeActivity">
 
     <TextView
-        android:id="@+id/startT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/readyApp"
-        android:layout_alignParentStart="true"
+        android:id="@+id/startText"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="33dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/info"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
+        android:layout_alignBottom="@+id/readyApp"
+        android:layout_alignParentStart="true"
         android:visibility="invisible"
         tools:ignore="HardcodedText" />
 
@@ -28,14 +28,15 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/startBtn"
         android:layout_centerHorizontal="true"
+        android:textColor="@android:color/background_dark"
+        android:textCursorDrawable="@color/colorAccent"
         android:layout_marginBottom="13dp"
+        android:textSize="18sp"
         android:fontFamily="sans-serif"
         android:text="@string/readyToStart"
-        android:textColor="@android:color/background_dark"
         android:textColorHighlight="@color/colorAccent"
-        android:textCursorDrawable="@color/colorAccent"
-        android:textSize="18sp"
         tools:textAlignment="center" />
+
 
     <Button
         android:id="@+id/infoBtn"
@@ -49,6 +50,7 @@
         android:layout_marginBottom="42dp"
         android:background="@drawable/button_shape"
         android:text="@string/moreInfo" />
+
 
     <Button
         android:id="@+id/startBtn"
@@ -72,9 +74,11 @@
         android:layout_above="@+id/startText"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginBottom="55dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginRight="22dp"
         app:srcCompat="@mipmap/welcomescreen"
         tools:ignore="ContentDescription" />
 
