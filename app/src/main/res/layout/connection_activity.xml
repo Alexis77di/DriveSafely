@@ -8,16 +8,17 @@
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="match_parent"
-        android:layout_height="336dp"
+        android:layout_height="388dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/open"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@mipmap/conn"
-        tools:ignore="ContentDescription"
-        tools:layout_editor_absoluteY="-1dp" />
+        tools:ignore="ContentDescription" />
 
     <Button
         android:id="@+id/open"

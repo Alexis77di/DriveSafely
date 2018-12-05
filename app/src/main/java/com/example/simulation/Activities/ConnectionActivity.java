@@ -2,6 +2,7 @@ package com.example.simulation.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.example.simulation.R;
 
 public class ConnectionActivity extends AppCompatActivity {
 
+    private static final int WIFI_ENABLE_REQUEST = 0x1006;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,8 +25,23 @@ public class ConnectionActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Intent intent=new Intent(Settings.ACTION_WIFI_SETTINGS);
                 //startActivity(intent);
+
+                startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), 0);
+
+
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+
+
     }
 
     @Override

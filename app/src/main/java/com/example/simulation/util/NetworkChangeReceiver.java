@@ -20,6 +20,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     }
 
     public static String getStatus(Context context) {
+
         return isConnected(context) ? context.getString(R.string.connected) : context.getString(R.string.not_connected);
     }
 

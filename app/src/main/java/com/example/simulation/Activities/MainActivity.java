@@ -12,10 +12,10 @@ import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -34,11 +34,7 @@ import android.widget.Toast;
 import com.example.simulation.Listeners.AccelerometerListener;
 import com.example.simulation.Listeners.MyLocationListener;
 import com.example.simulation.R;
-import com.example.simulation.util.MessagePublisher;
-import com.example.simulation.util.MqttSubscriber;
 import com.example.simulation.util.NetworkChangeReceiver;
-
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -47,8 +43,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static Boolean broker_run_flag = false;
     public static String Port_Ip = "tcp://192.168.1.3:1883"; //by default
-    public int rate = 5000; //by default
+    public static int rate = 4000; //by default
     public static String macAddress;
     public static String topic;
 
@@ -64,11 +61,9 @@ public class MainActivity extends AppCompatActivity {
     //--Sound--//
     Button btnSound;
     private int soundId;
-
-
+    public static MyLocationListener locationListener;
     //--Location--//
-    private LocationManager locationManager;
-    private MyLocationListener locationListener;
+    public LocationManager locationManager;
 
     //--Connectivity--//
     private BroadcastReceiver networkChangeReceiver;
@@ -95,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         networkChangeReceiver = new NetworkChangeReceiver();
-
-
-
 
 
         //---------FlashLight Event--------------------------------------------//
@@ -130,16 +122,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-//        //---------------------------Sound Event-------------------------//
-//        btnSound = findViewById(R.id.btnSound);
-//        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
-//        btnSound.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mp.start();
-//
-//            }
-//        });
+        //---------------------------Sound Event-------------------------//
+        btnSound = findViewById(R.id.btnSound);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
+        btnSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mp.start();
+
+            }
+        });
 
 
     }
@@ -171,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(networkChangeReceiver, intentFilter);
 
 
-
         //---------------------Create our Sensor Manager----------------------------//
         SM = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -188,34 +179,32 @@ public class MainActivity extends AppCompatActivity {
         //-----------------Accelerometer Sensor-----------------
         accelero = new AccelerometerListener(SM, threshold_x_axis, threshold_y_axis, threshold_z_axis, textTable, context);
 
-        topic = "MacAddress = " + macAddress + "/" + accelero.getSensorValue() + "/" + locationListener.getDevLatitude() + "/" + locationListener.getDevLongtitude();
+
+//        final Handler handlerP = new Handler();
+//        handlerP.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
+//                msgpb.publish();
+//                handlerP.postDelayed(this, rate);
+//            }
+//        }, 1500);
 
 
-        final Handler handlerP = new Handler();
-        handlerP.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
-                msgpb.publish();
-                handlerP.postDelayed(this, rate);
-            }
-        }, 1500);
-
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    MqttSubscriber subscriber = new MqttSubscriber(getApplicationContext(), "MQTT Examples", "tcp://localhost:1883");
-                    subscriber.connect();
-                    //subscriber.subscribe();
-                    // subscriber.disconnect();
-                } catch (MqttException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            public void run() {
+//                try {
+//                    MqttSubscriber subscriber = new MqttSubscriber(getApplicationContext(), "MQTT Examples", "tcp://localhost:1883");
+//                    subscriber.connect();
+//                    //subscriber.subscribe();
+//                    // subscriber.disconnect();
+//                } catch (MqttException e) {
+//                    e.printStackTrace();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
 
 //        final Handler handlerS = new Handler();
@@ -233,6 +222,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(networkChangeReceiver);
+        accelero.unregister(SM);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
+                }, 10);
+            }
+
+            return;
+        }
+        locationManager.removeUpdates(locationListener);
+
     }
 
 
@@ -268,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                 input.setLayoutParams(lp);
                 alertDialog.setView(input);
 
-                alertDialog.setNeutralButton("Save", new DialogInterface.OnClickListener() {
+                alertDialog.setNeutralButton("Save changes", new DialogInterface.OnClickListener() {
 
                     // click listener on the alert box
                     public void onClick(DialogInterface dialog, int which) {
@@ -286,11 +288,11 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams r = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
-                input1.setText("5000");
+                input1.setText("4000");
                 input1.setLayoutParams(r);
                 alertDialog1.setView(input1);
 
-                alertDialog1.setNeutralButton("Save", new DialogInterface.OnClickListener() {
+                alertDialog1.setNeutralButton("Save changes", new DialogInterface.OnClickListener() {
 
                     // click listener on the alert box
                     public void onClick(DialogInterface dialog, int which) {

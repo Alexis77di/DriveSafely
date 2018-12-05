@@ -1,4 +1,4 @@
-package com.example.simulation.util;
+package com.example.simulation.Listeners;
 
 import android.content.Context;
 import android.media.AudioAttributes;
@@ -8,11 +8,11 @@ import android.os.Build;
 
 import com.example.simulation.R;
 
-public class SoundEvent {
+public class SoundEventListener {
     private SoundPool mySound;
     private int streamId;
 
-    public SoundEvent() {
+    public SoundEventListener() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
             AudioAttributes aa = new AudioAttributes.Builder()
@@ -34,6 +34,14 @@ public class SoundEvent {
         return mySound.load(context, R.raw.alarm, 1);
     }
 
+    public int playNonStop(int soundId) {
+        streamId = mySound.play(soundId, .25f, .25f, 1, -1, 1);
+        return streamId;
+    }
+
+    public void stopSound(int streamId) {
+        mySound.stop(streamId);
+    }
 
     public void playOnce(int soundId) {
         mySound.play(soundId, .25f, .25f, 1, 0, 1);
