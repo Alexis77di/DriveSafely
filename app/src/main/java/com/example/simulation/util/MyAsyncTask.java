@@ -4,7 +4,8 @@ import android.content.Context;
 
 import java.util.Comparator;
 
-import static com.example.simulation.Activities.MainActivity.broker_run_flag;
+import static com.example.simulation.Activities.MainActivity.flag;
+import static com.example.simulation.Activities.MainActivity.macAddress;
 import static com.example.simulation.Activities.MainActivity.rate;
 
 public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
@@ -38,10 +39,10 @@ public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
             Thread.sleep(rate);
             publisher = new MqttPublisher();
             publisher.main(topic, ip_port);
-            if (!broker_run_flag) {
+            if (flag) {
                 subscriber = new MqttSub();
-                subscriber.main("7c:76:68:f2:65:20", ip_port, context);
-                broker_run_flag = true;
+                subscriber.main(macAddress, ip_port, context);
+                flag = true;
             }
 
 

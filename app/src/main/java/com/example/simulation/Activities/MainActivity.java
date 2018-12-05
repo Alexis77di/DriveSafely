@@ -43,7 +43,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static Boolean broker_run_flag = false;
+    public static Boolean flag = false;
     public static String Port_Ip = "tcp://192.168.1.3:1883"; //by default
     public static int rate = 4000; //by default
     public static String macAddress;

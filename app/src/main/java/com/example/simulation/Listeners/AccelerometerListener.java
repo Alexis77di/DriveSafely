@@ -46,6 +46,7 @@ public class AccelerometerListener implements SensorEventListener {
 
     }
 
+
     @Override
     public void onSensorChanged(final SensorEvent event) {
         textTable[0].setText("X: " + event.values[0]);
