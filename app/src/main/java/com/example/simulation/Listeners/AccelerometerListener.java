@@ -5,10 +5,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Handler;
+import android.media.MediaPlayer;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.simulation.R;
 import com.example.simulation.util.MyAsyncTask;
 
 import static com.example.simulation.Activities.MainActivity.Port_Ip;
@@ -39,10 +39,6 @@ public class AccelerometerListener implements SensorEventListener {
         this.threshold_z_axis = threshold_z_axis;
         this.context = context;
 
-        //mysound
-        se = new SoundEventListener();
-        soundId = se.getSoundId(context);
-
 
     }
 
@@ -60,19 +56,9 @@ public class AccelerometerListener implements SensorEventListener {
         MyAsyncTask tt = new MyAsyncTask(topic, Port_Ip, context);
         tt.execute();
 
-        CharSequence text = "Βe careful!!";
-        final Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-        toast.show();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                toast.cancel();
-            }
-        }, 1500);
+        final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
+        mp.start();
 
-        //se.playOnce(soundId);
-        //se.stopSound(streamId);
         return;
     }
 
@@ -80,7 +66,6 @@ public class AccelerometerListener implements SensorEventListener {
 
     public void unregister(SensorManager SM) {
         SM.unregisterListener(this);
-        se.stopSound(streamId);
     }
 
 

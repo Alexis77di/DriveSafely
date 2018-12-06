@@ -1,6 +1,9 @@
 package com.example.simulation.util;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+
+import com.example.simulation.R;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
@@ -14,10 +17,12 @@ public class MqttSub implements MqttCallback {
     public String topic;
     public Context context;
 
+
     public void main(String topic, String port_ip, Context context) {
 
         this.topic = topic;
         this.context = context;
+
 
 
         int qos = 2;
@@ -65,6 +70,15 @@ public class MqttSub implements MqttCallback {
         final String mes = new String(message.getPayload());
         System.out.println("message: " + mes);
 
+        if (mes == "alarm") {
+            final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
+            mp.start();
+        }
+
+
+
+
+
     }
 
 
@@ -72,4 +86,7 @@ public class MqttSub implements MqttCallback {
     public void deliveryComplete(IMqttDeliveryToken token) {
         System.err.println("delivery complete");
     }
+
+
 }
+

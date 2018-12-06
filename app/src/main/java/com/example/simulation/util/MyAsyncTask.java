@@ -39,7 +39,7 @@ public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
             Thread.sleep(rate);
             publisher = new MqttPublisher();
             publisher.main(topic, ip_port);
-            if (flag) {
+            if (!flag) {
                 subscriber = new MqttSub();
                 subscriber.main(macAddress, ip_port, context);
                 flag = true;

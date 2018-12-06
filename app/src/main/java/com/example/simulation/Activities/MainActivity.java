@@ -180,41 +180,6 @@ public class MainActivity extends AppCompatActivity {
         accelero = new AccelerometerListener(SM, threshold_x_axis, threshold_y_axis, threshold_z_axis, textTable, context);
 
 
-//        final Handler handlerP = new Handler();
-//        handlerP.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                MessagePublisher msgpb = new MessagePublisher(getApplicationContext(), topic);
-//                msgpb.publish();
-//                handlerP.postDelayed(this, rate);
-//            }
-//        }, 1500);
-
-
-//        new Thread(new Runnable() {
-//            public void run() {
-//                try {
-//                    MqttSubscriber subscriber = new MqttSubscriber(getApplicationContext(), "MQTT Examples", "tcp://localhost:1883");
-//                    subscriber.connect();
-//                    //subscriber.subscribe();
-//                    // subscriber.disconnect();
-//                } catch (MqttException e) {
-//                    e.printStackTrace();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-
-
-//        final Handler handlerS = new Handler();
-//        handlerS.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                MqttSub subscriber = new MqttSub();
-//                subscriber.main();
-//            }
-//        },1500);
 
     }
 
