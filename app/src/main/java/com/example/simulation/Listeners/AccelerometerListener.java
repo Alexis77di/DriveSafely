@@ -5,10 +5,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.MediaPlayer;
 import android.widget.TextView;
 
-import com.example.simulation.R;
 import com.example.simulation.util.MyAsyncTask;
 
 import static com.example.simulation.Activities.MainActivity.Port_Ip;
@@ -56,8 +54,6 @@ public class AccelerometerListener implements SensorEventListener {
         MyAsyncTask tt = new MyAsyncTask(topic, Port_Ip, context);
         tt.execute();
 
-        final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
-        mp.start();
 
         return;
     }

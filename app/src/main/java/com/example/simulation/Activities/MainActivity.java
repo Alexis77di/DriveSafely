@@ -12,7 +12,6 @@ import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +33,7 @@ import android.widget.Toast;
 import com.example.simulation.Listeners.AccelerometerListener;
 import com.example.simulation.Listeners.MyLocationListener;
 import com.example.simulation.R;
+import com.example.simulation.util.EegTransmitter;
 import com.example.simulation.util.NetworkChangeReceiver;
 
 import java.net.NetworkInterface;
@@ -59,8 +59,9 @@ public class MainActivity extends AppCompatActivity {
     boolean hasCameraFlash = false;
 
     //--Sound--//
-    Button btnSound;
+    //Button btnSound;
     private int soundId;
+
     public static MyLocationListener locationListener;
     //--Location--//
     public LocationManager locationManager;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private int threshold_z_axis;
     private AccelerometerListener accelero;
 
+    private EegTransmitter eegTransmitter;
     //--Our Sensor Manager--//
     private SensorManager SM;
 
@@ -121,17 +123,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        eegTransmitter = new EegTransmitter();
+        eegTransmitter.execute();
 
         //---------------------------Sound Event-------------------------//
-        btnSound = findViewById(R.id.btnSound);
-        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
-        btnSound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mp.start();
-
-            }
-        });
+//        btnSound = findViewById(R.id.btnSound);
+//        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
+//        btnSound.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mp.start();
+//
+//            }
+//        });
 
 
     }

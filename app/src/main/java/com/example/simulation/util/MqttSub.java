@@ -70,9 +70,16 @@ public class MqttSub implements MqttCallback {
         final String mes = new String(message.getPayload());
         System.out.println("message: " + mes);
 
-        if (mes == "alarm") {
+
+        if (mes.equals("alarm")) {
+            System.out.println("doneeeeeeeeeeeeeeeeeeeee");
             final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
             mp.start();
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer player) {
+                    player.release();
+                }
+            });
         }
 
 
