@@ -1,9 +1,11 @@
 package com.example.simulation.Listeners;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,8 @@ public class MyLocationListener implements LocationListener {
     public void onProviderDisabled(String provider) {
         Toast.makeText(context, "Gps is turned off!! ",
                 Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        context.startActivity(i);
     }
 
     public Double getDevLatitude() {

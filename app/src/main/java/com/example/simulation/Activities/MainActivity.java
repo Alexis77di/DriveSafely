@@ -5,13 +5,13 @@ import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
     boolean hasCameraFlash = false;
 
     //--Sound--//
-    //Button btnSound;
-    private int soundId;
+    Button btnSound;
 
     public static MyLocationListener locationListener;
     //--Location--//
@@ -127,15 +126,15 @@ public class MainActivity extends AppCompatActivity {
         eegTransmitter.execute();
 
         //---------------------------Sound Event-------------------------//
-//        btnSound = findViewById(R.id.btnSound);
-//        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
-//        btnSound.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mp.start();
-//
-//            }
-//        });
+        btnSound = findViewById(R.id.btnSound);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
+        btnSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mp.start();
+
+            }
+        });
 
 
     }
@@ -160,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
-
         //-------------------Internet Connectivity------------------------------------//
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -180,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
         Context context = getApplicationContext();
 
+
         //-----------------Accelerometer Sensor-----------------
         accelero = new AccelerometerListener(SM, threshold_x_axis, threshold_y_axis, threshold_z_axis, textTable, context);
 
@@ -188,8 +187,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         unregisterReceiver(networkChangeReceiver);
         accelero.unregister(SM);
 
@@ -221,11 +220,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.connection_settings:
-                Intent toy1 = new Intent(MainActivity.this, ConnectionActivity.class);
-                startActivity(toy1);
-                finish();
-                break;
             case R.id.menu_mqtt_settings:
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                 alertDialog.setTitle("Connection Settings");
@@ -342,25 +336,6 @@ public class MainActivity extends AppCompatActivity {
         return "02:00:00:00:00:00"; // <Android 6.0.
     }
 
-
-    //-----------This function is used in order to Find out if the GPS of an Android device is enabled------------
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
 
 
     //-------------This function is used in order to unable the flashlight----------//

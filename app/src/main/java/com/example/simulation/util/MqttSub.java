@@ -18,6 +18,7 @@ public class MqttSub implements MqttCallback {
     public Context context;
 
 
+
     public void main(String topic, String port_ip, Context context) {
 
         this.topic = topic;
@@ -72,7 +73,6 @@ public class MqttSub implements MqttCallback {
 
 
         if (mes.equals("alarm")) {
-            System.out.println("doneeeeeeeeeeeeeeeeeeeee");
             final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
             mp.start();
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -81,10 +81,6 @@ public class MqttSub implements MqttCallback {
                 }
             });
         }
-
-
-
-
 
     }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import com.example.simulation.R;
@@ -16,7 +17,14 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnected();
+        if (activeNetwork != null) {
+            return activeNetwork.isConnected();
+        } else {
+            Intent w = new Intent(Settings.ACTION_WIFI_SETTINGS);
+            context.startActivity(w);
+        }
+        return false;
+
     }
 
     public static String getStatus(Context context) {
@@ -31,4 +39,5 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         }
 
     }
+
 }

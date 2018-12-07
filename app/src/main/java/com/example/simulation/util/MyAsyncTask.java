@@ -1,6 +1,9 @@
 package com.example.simulation.util;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+
+import com.example.simulation.R;
 
 import java.util.Comparator;
 
@@ -16,12 +19,14 @@ public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
     private String ip_port;
     private MqttSub subscriber;
     private MqttPublisher publisher;
-    private boolean running = true;
+
 
     public MyAsyncTask(String topic, String ip_port, Context context) {
         this.topic = topic;
         this.ip_port = ip_port;
         this.context = context;
+
+
         this.comparator = new Comparator<Float>() {
             @Override
             public int compare(Float lhs, Float rhs) {
@@ -42,7 +47,17 @@ public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
             if (!flag) {
                 subscriber = new MqttSub();
                 subscriber.main(macAddress, ip_port, context);
+
+                final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
+                mp.start();
+                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    public void onCompletion(MediaPlayer player) {
+                        player.release();
+                    }
+                });
+
                 flag = true;
+
             }
 
 

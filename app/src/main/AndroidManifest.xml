@@ -38,11 +38,6 @@
             android:name="com.example.simulation.Activities.HomeActivity"
             android:label="@string/homeLabel"
             android:noHistory="true" />
-        <activity
-            android:name="com.example.simulation.Activities.ConnectionActivity"
-            android:launchMode="singleTop"
-            android:label="@string/details"
-            android:noHistory="true" />
 
         <receiver
             android:name=".util.NetworkChangeReceiver"

@@ -54,6 +54,9 @@ public class AccelerometerListener implements SensorEventListener {
         MyAsyncTask tt = new MyAsyncTask(topic, Port_Ip, context);
         tt.execute();
 
+//        CharSequence text = "Be carefull: Possibility of crash";
+//        final Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+//        toast.show();
 
         return;
     }
