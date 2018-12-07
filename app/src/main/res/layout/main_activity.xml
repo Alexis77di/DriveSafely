@@ -120,7 +120,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginStart="0dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="7dp"
             android:background="@android:drawable/dialog_holo_light_frame"
             android:text="@string/Buttons"
             android:textColor="@color/colorPrimaryDark"
@@ -165,14 +165,15 @@
 
         <Button
             android:id="@+id/btnFlashLightToggle"
-            android:layout_width="wrap_content"
+            android:layout_width="131dp"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/textView5"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginStart="210dp"
-            android:layout_marginLeft="210dp"
-            android:layout_marginTop="165dp"
+            android:layout_marginStart="175dp"
+            android:layout_marginLeft="175dp"
+            android:layout_marginTop="161dp"
+            android:background="@drawable/button_shape"
             android:text="FLASHLIGHT OFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -181,14 +182,15 @@
 
         <Button
             android:id="@+id/btnSound"
-            android:layout_width="102dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/Buttons"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="26dp"
+            android:layout_marginStart="11dp"
+            android:layout_marginLeft="11dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_shape"
             android:text="Play me" />
 
 

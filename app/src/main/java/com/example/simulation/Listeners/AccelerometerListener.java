@@ -49,6 +49,7 @@ public class AccelerometerListener implements SensorEventListener {
         sensor_values = "";
         sensor_values = sensor_values + Float.toString(event.values[0]) + "," + Float.toString(event.values[1]) + "," + Float.toString(event.values[2]);
 
+
         String topic = macAddress + "/" + getSensorValue() + "/" + locationListener.getDevLatitude() + "/" + locationListener.getDevLongtitude();
 
         MyAsyncTask tt = new MyAsyncTask(topic, Port_Ip, context);

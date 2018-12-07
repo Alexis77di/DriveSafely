@@ -61,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
     //--Sound--//
     Button btnSound;
 
-    public static MyLocationListener locationListener;
+
     //--Location--//
-    public LocationManager locationManager;
+    public static MyLocationListener locationListener;
+    private LocationManager locationManager;
 
     //--Connectivity--//
     private BroadcastReceiver networkChangeReceiver;
