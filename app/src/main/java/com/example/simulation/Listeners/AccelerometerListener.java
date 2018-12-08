@@ -19,9 +19,6 @@ public class AccelerometerListener implements SensorEventListener {
     public int threshold_y_axis;
     public int threshold_z_axis;
     public String sensor_values = "";
-    private SoundEventListener se;
-    private int soundId;
-    private int streamId;
     private TextView[] textTable;
     private Context context;
 
@@ -52,12 +49,8 @@ public class AccelerometerListener implements SensorEventListener {
 
         String topic = macAddress + "/" + getSensorValue() + "/" + locationListener.getDevLatitude() + "/" + locationListener.getDevLongtitude();
 
-        MyAsyncTask tt = new MyAsyncTask(topic, Port_Ip, context);
-        tt.execute();
-
-//        CharSequence text = "Be carefull: Possibility of crash";
-//        final Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-//        toast.show();
+        MyAsyncTask task = new MyAsyncTask(topic, Port_Ip, context);
+        task.execute();
 
         return;
     }

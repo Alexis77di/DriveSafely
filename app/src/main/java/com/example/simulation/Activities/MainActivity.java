@@ -43,13 +43,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static Boolean flag = false;
+    public static Boolean flag = false;    // only one subscribe message
     public static String Port_Ip = "tcp://192.168.1.3:1883"; //by default
-    public static int rate = 4000; //by default
+    public static int rate = 4000; //by default --- publish frequency
     public static String macAddress;
     public static String topic;
 
-    private TextView t;
     private TextView TextView7;
 
 
@@ -75,7 +74,9 @@ public class MainActivity extends AppCompatActivity {
     private int threshold_z_axis;
     private AccelerometerListener accelero;
 
+
     private EegTransmitter eegTransmitter;
+
     //--Our Sensor Manager--//
     private SensorManager SM;
 
@@ -86,9 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
         macAddress = getMacAddr();
 
-        t = findViewById(R.id.textView);
 
-        TextView7 = findViewById(R.id.TextView7);
+        TextView7 = findViewById(R.id.TextView7);   //Location
 
 
         networkChangeReceiver = new NetworkChangeReceiver();
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         eegTransmitter = new EegTransmitter();
         eegTransmitter.execute();
 
@@ -145,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        //---------------------Create our Sensor Manager----------------------------//
+        SM = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         //----------------Listener for the GPS Location-----------------------//
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -164,10 +167,6 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeReceiver, intentFilter);
-
-
-        //---------------------Create our Sensor Manager----------------------------//
-        SM = (SensorManager) getSystemService(SENSOR_SERVICE);
 
 
         //-----------Assign TextView-----------

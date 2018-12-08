@@ -1,11 +1,6 @@
 package com.example.simulation.util;
 
 import android.content.Context;
-import android.media.MediaPlayer;
-
-import com.example.simulation.R;
-
-import java.util.Comparator;
 
 import static com.example.simulation.Activities.MainActivity.flag;
 import static com.example.simulation.Activities.MainActivity.macAddress;
@@ -13,7 +8,6 @@ import static com.example.simulation.Activities.MainActivity.rate;
 
 public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
 
-    private final Comparator<Float> comparator;
     private String topic;
     private Context context;
     private String ip_port;
@@ -21,18 +15,12 @@ public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
     private MqttPublisher publisher;
 
 
+
     public MyAsyncTask(String topic, String ip_port, Context context) {
         this.topic = topic;
         this.ip_port = ip_port;
         this.context = context;
 
-
-        this.comparator = new Comparator<Float>() {
-            @Override
-            public int compare(Float lhs, Float rhs) {
-                return lhs.compareTo(rhs);
-            }
-        };
     }
 
     @Override
@@ -40,21 +28,22 @@ public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
 
 
         try {
-            // Sleeping for given time period
-            Thread.sleep(rate);
+
+            Thread.sleep(rate);  // Sleeping for given time period,by default 4 secs
             publisher = new MqttPublisher();
             publisher.main(topic, ip_port);
-            if (!flag) {
+            if (!flag) {                                  //only one subscribe
                 subscriber = new MqttSub();
                 subscriber.main(macAddress, ip_port, context);
 
-                final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
-                mp.start();
-                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    public void onCompletion(MediaPlayer player) {
-                        player.release();
-                    }
-                });
+//                final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
+//                mp.start();
+//                mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                    public void onCompletion(MediaPlayer player) {
+//                        player.release();
+//                    }
+//                });
+
 
                 flag = true;
 
