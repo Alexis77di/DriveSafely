@@ -11,8 +11,6 @@ import android.widget.Toast;
 import com.example.simulation.R;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
-
-
     public static boolean isConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

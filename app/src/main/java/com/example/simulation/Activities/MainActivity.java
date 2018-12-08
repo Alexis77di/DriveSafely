@@ -5,9 +5,9 @@ import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.LocationManager;
@@ -15,6 +15,8 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -36,123 +38,37 @@ import com.example.simulation.R;
 import com.example.simulation.util.EegTransmitter;
 import com.example.simulation.util.NetworkChangeReceiver;
 
-import java.net.NetworkInterface;
-import java.util.Collections;
-import java.util.List;
-
-
 public class MainActivity extends AppCompatActivity {
-
-    public static Boolean flag = false;    // only one subscribe message
-    public static String Port_Ip = "tcp://192.168.1.3:1883"; //by default
-    public static int rate = 4000; //by default --- publish frequency
-    public static String macAddress;
-    public static String topic;
-
-    private TextView TextView7;
+    public String port_Ip = "tcp://192.168.1.3:1883"; //by default
+    public long rate = 4000; //by default
 
 
     //--FlashLight--//
     private static final int CAMERA_REQUEST = 123;
     Button btnFlashLight;
-    boolean hasCameraFlash = false;
 
     //--Sound--//
     Button btnSound;
 
-
-    //--Location--//
-    public static MyLocationListener locationListener;
-    private LocationManager locationManager;
-
     //--Connectivity--//
+
     private BroadcastReceiver networkChangeReceiver;
-
-    //--Accelerometer--//
-    private int threshold_x_axis;
-    private int threshold_y_axis;
-    private int threshold_z_axis;
-    private AccelerometerListener accelero;
-
-
+    private MyLocationListener locationListener;
     private EegTransmitter eegTransmitter;
-
-    //--Our Sensor Manager--//
-    private SensorManager SM;
+    private AccelerometerListener accelero;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        macAddress = getMacAddr();
-
-
-        TextView7 = findViewById(R.id.TextView7);   //Location
-
-
         networkChangeReceiver = new NetworkChangeReceiver();
-
-
-        //---------FlashLight Event--------------------------------------------//
-
-        ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-
-        hasCameraFlash = getPackageManager().
-                hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-
-        btnFlashLight = findViewById(R.id.btnFlashLightToggle);
-
-        btnFlashLight.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View view) {
-                if (hasCameraFlash) {
-                    if (btnFlashLight.getText().toString().contains("ON")) {
-                        btnFlashLight.setText("FLASHLIGHT OFF");
-                        flashLightOff();
-                    } else {
-                        btnFlashLight.setText("FLASHLIGHT ON");
-                        flashLightOn();
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "No flash available on your device",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-        eegTransmitter = new EegTransmitter();
-        eegTransmitter.execute();
-
-        //---------------------------Sound Event-------------------------//
-        btnSound = findViewById(R.id.btnSound);
-        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
-        btnSound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mp.start();
-
-            }
-        });
-
-
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        //---------------------Create our Sensor Manager----------------------------//
-        SM = (SensorManager) getSystemService(SENSOR_SERVICE);
+//        eegTransmitter = new EegTransmitter();
+        accelero = new AccelerometerListener(this);
 
         //----------------Listener for the GPS Location-----------------------//
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new MyLocationListener(getApplicationContext(), TextView7);
-
+        locationListener = new MyLocationListener();
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
@@ -163,34 +79,95 @@ public class MainActivity extends AppCompatActivity {
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
+        final Handler mHandler = new Handler();
+        final Runnable mStatusChecker = new Runnable() {
+            TextView xText = findViewById(R.id.xText);
+            TextView yText = findViewById(R.id.yText);
+            TextView zText = findViewById(R.id.zText);
+            TextView locationText = findViewById(R.id.locationText);
+
+            boolean isGpsEnabled = false;
+
+            @Override
+            public void run() {
+                updateScreen();
+//              sendData();
+                mHandler.postDelayed(this, rate);
+            }
+
+            private void updateScreen() {
+                //accelero
+                xText.setText(String.valueOf(accelero.getX()));
+                yText.setText(String.valueOf(accelero.getY()));
+                zText.setText(String.valueOf(accelero.getZ()));
+                //location
+                locationText.setText(getString(R.string.gps, locationListener.getLatitude(), locationListener.getLongtitude()));
+                if (isGpsEnabled != locationListener.isGpsEnabled()) {
+                    isGpsEnabled = locationListener.isGpsEnabled();
+                    Context context = getApplicationContext();
+                    if (isGpsEnabled) {
+                        Toast.makeText(context, "Gps is turned on!! ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Gps is turned off!! ", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        context.startActivity(i);
+                    }
+                }
+            }
+        };
+        mStatusChecker.run();
+
+        //---------FlashLight Event--------------------------------------------//
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+
+        btnFlashLight = findViewById(R.id.btnFlashLightToggle);
+        btnFlashLight.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                //hasCameraFlash?
+                if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+                    if (btnFlashLight.getText().toString().contains("ON")) {
+                        btnFlashLight.setText(getString(R.string.flashOFF));
+                        flashLightOff();
+                    } else {
+                        btnFlashLight.setText(getString(R.string.flashON));
+                        flashLightOn();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "No flash available on your device",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //---------------------------Sound Event-------------------------//
+        btnSound = findViewById(R.id.btnSound);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
+        btnSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mp.start();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        accelero.register();
+
         //-------------------Internet Connectivity------------------------------------//
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeReceiver, intentFilter);
-
-
-        //-----------Assign TextView-----------
-        TextView[] textTable = new TextView[3];
-        textTable[0] = findViewById(R.id.xText);
-        textTable[1] = findViewById(R.id.yText);
-        textTable[2] = findViewById(R.id.zText);
-
-
-        Context context = getApplicationContext();
-
-
-        //-----------------Accelerometer Sensor-----------------
-        accelero = new AccelerometerListener(SM, threshold_x_axis, threshold_y_axis, threshold_z_axis, textTable, context);
-
-
-
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unregisterReceiver(networkChangeReceiver);
-        accelero.unregister(SM);
+        accelero.unregister();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -201,8 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
             return;
         }
-        locationManager.removeUpdates(locationListener);
-
+//        locationManager.removeUpdates(locationListener);
     }
 
 
@@ -237,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // click listener on the alert box
                     public void onClick(DialogInterface dialog, int which) {
-                        Port_Ip = input.getText().toString();
+                        port_Ip = input.getText().toString();
                         dialog.dismiss();
                     }
                 });
@@ -309,35 +285,6 @@ public class MainActivity extends AppCompatActivity {
         ad.show();
     }
 
-    //--------------This function is used in order to find the mac address of the device--------------//
-    private String getMacAddr() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return "";
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(String.format("%02X:", b));
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {
-        }
-        return "02:00:00:00:00:00"; // <Android 6.0.
-    }
-
-
-
     //-------------This function is used in order to unable the flashlight----------//
     @TargetApi(Build.VERSION_CODES.M)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -370,12 +317,9 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case CAMERA_REQUEST:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    hasCameraFlash = getPackageManager().
-                            hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+//                    hasCameraFlash = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
                 }
                 break;
         }
     }
-
-
 }

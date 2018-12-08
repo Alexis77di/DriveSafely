@@ -26,5 +26,8 @@
     <string name="not_connected">No internet connection</string>
     <string name="Buttons">Buttons</string>
     <string name="Location">Location</string>
+    <string name="gps">%f %f</string>
+    <string name="flashOFF">FLASHLIGHT OFF</string>
+    <string name="flashON">FLASHLIGHT ON</string>
 
 </resources>

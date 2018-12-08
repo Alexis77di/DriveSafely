@@ -2,33 +2,27 @@ package com.example.simulation.util;
 
 import android.content.Context;
 
-import static com.example.simulation.Activities.MainActivity.flag;
-import static com.example.simulation.Activities.MainActivity.macAddress;
-import static com.example.simulation.Activities.MainActivity.rate;
-
 public class MyAsyncTask extends android.os.AsyncTask<Void, Void, Void> {
 
+    public Boolean flag = false;
+    public String macAddress;
     private String topic;
     private Context context;
     private String ip_port;
     private MqttSub subscriber;
     private MqttPublisher publisher;
+    private long rate;
 
-
-
-    public MyAsyncTask(String topic, String ip_port, Context context) {
+    public MyAsyncTask(String topic, String ip_port, Context context, long rate) {
         this.topic = topic;
         this.ip_port = ip_port;
         this.context = context;
-
+        this.rate = rate;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-
-
         try {
-
             Thread.sleep(rate);  // Sleeping for given time period,by default 4 secs
             publisher = new MqttPublisher();
             publisher.main(topic, ip_port);

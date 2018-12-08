@@ -14,76 +14,6 @@
         tools:context="com.example.simulation.Activities.MainActivity">
 
         <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/yText"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/m_s2"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="15sp" />
-
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/xText"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/m_s2"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/m_sec2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/zText"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/m_s2"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="15sp"
-            tools:ignore="RelativeOverlap" />
-
-        <View
-            android:id="@+id/view2"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:layout_below="@+id/btnSound"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:background="#d93434" />
-
-        <TextView
-            android:id="@+id/zText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/yText"
-            android:layout_alignStart="@+id/yText"
-            android:layout_alignLeft="@+id/yText"
-            android:layout_marginTop="33dp"
-            android:text="@string/Z"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/xText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/Accelerometer"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="19dp"
-            android:text="@string/X"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="11dp"
-            android:textSize="14sp" />
-
-        <TextView
             android:id="@+id/Accelerometer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,25 +21,11 @@
             android:layout_alignParentLeft="true"
             android:layout_marginStart="0dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="21dp"
-            android:allowUndo="true"
+            android:layout_marginTop="7dp"
             android:background="@android:drawable/dialog_holo_light_frame"
             android:text="@string/Accelerometer"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"
-            tools:ignore="UnusedAttribute" />
-
-        <TextView
-            android:id="@+id/yText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textView6"
-            android:layout_alignStart="@+id/xText"
-            android:layout_alignLeft="@+id/xText"
-            android:layout_marginTop="31dp"
-            android:text="@string/Y"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="14sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/Buttons"
@@ -127,15 +43,85 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/TextView7"
-            android:layout_width="183dp"
-            android:layout_height="120dp"
+            android:id="@+id/Location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view2"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/Location"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="7dp"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:text="@string/Location"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="14sp" />
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/xText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/Accelerometer"
+            android:layout_marginTop="19dp"
+            android:text="@string/X"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp" />
+
+        <TextView
+            android:id="@+id/yText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/xText"
+            android:layout_marginTop="19dp"
+            android:text="@string/Y"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp" />
+
+        <TextView
+            android:id="@+id/zText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/yText"
+            android:layout_marginTop="19dp"
+            android:text="@string/Z"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/yText"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/m_s2"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/xText"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/m_s2"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/zText"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/m_s2"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="15sp" />
 
         <View
             android:id="@+id/view3"
@@ -146,39 +132,25 @@
             android:layout_marginTop="16dp"
             android:background="#d93434" />
 
+        <View
+            android:id="@+id/view2"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/btnSound"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:background="#d93434" />
+
         <TextView
-            android:id="@+id/Location"
+            android:id="@+id/locationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnSound"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginStart="6dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginTop="13dp"
-            android:allowUndo="true"
-            android:background="@android:drawable/dialog_holo_light_frame"
-            android:text="@string/Location"
+            android:layout_below="@+id/Location"
+            android:layout_marginTop="19dp"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"
-            tools:ignore="UnusedAttribute" />
-
-        <Button
-            android:id="@+id/btnFlashLightToggle"
-            android:layout_width="131dp"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/textView5"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginStart="175dp"
-            android:layout_marginLeft="175dp"
-            android:layout_marginTop="161dp"
-            android:background="@drawable/button_shape"
-            android:text="FLASHLIGHT OFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="14sp"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp" />
 
         <Button
             android:id="@+id/btnSound"
@@ -193,6 +165,18 @@
             android:background="@drawable/button_shape"
             android:text="Play me" />
 
+        <Button
+            android:id="@+id/btnFlashLightToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/Buttons"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="175dp"
+            android:layout_marginLeft="175dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_shape"
+            android:text="@string/flashOFF" />
 
     </RelativeLayout>
 

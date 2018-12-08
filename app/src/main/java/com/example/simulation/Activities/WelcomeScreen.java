@@ -2,6 +2,8 @@ package com.example.simulation.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -9,14 +11,15 @@ import android.widget.TextView;
 
 import com.example.simulation.R;
 
-//--This is thw first activity--//
+//--This is the first activity--//
 //--This action remain for 2 seconds--//
 //Goes to next screen(activity) automatically--//
 
 public class WelcomeScreen extends AppCompatActivity {
+    private static final long SPLASH_TIME = 2000;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_screen);
 
@@ -28,19 +31,14 @@ public class WelcomeScreen extends AppCompatActivity {
         anim.setRepeatCount(Animation.INFINITE);
         textView.startAnimation(anim);
 
-        Thread myThread = new Thread() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                try {
-                    sleep(2000);
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    startActivity(intent);
-                    finish();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                /* Create an Intent that will start the Menu-Activity. */
+                Intent mainIntent = new Intent(WelcomeScreen.this, HomeActivity.class);
+                WelcomeScreen.this.startActivity(mainIntent);
+                WelcomeScreen.this.finish();
             }
-        };
-        myThread.start();
+        }, SPLASH_TIME);
     }
 }
