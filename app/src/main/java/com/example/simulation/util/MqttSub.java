@@ -2,7 +2,9 @@ package com.example.simulation.util;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.content.Context;
 
+import com.example.simulation.Activities.MainActivity;
 import com.example.simulation.R;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -17,13 +19,10 @@ public class MqttSub implements MqttCallback {
     public String topic;
     public Context context;
 
-
-
     public void main(String topic, String port_ip, Context context) {
 
         this.topic = topic;
         this.context = context;
-
 
 
         int qos = 2;
@@ -66,21 +65,22 @@ public class MqttSub implements MqttCallback {
     }
 
     @Override
-    public void messageArrived(String topic, final MqttMessage message) {
+    public void messageArrived(String topic, final MqttMessage message) throws Exception {
         System.out.println("topic: " + topic);
         final String mes = new String(message.getPayload());
         System.out.println("message: " + mes);
 
 
-        if (mes.equals("alarm")) {
-            final MediaPlayer mp = MediaPlayer.create(context, R.raw.alarm);
-            mp.start();
-            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                public void onCompletion(MediaPlayer player) {
-                    player.release();
-                }
-            });
-        }
+//        Context cont = MainActivity.ma.getApplicationContext();
+//        if (mes.equals("alarm")) {
+//            final MediaPlayer mp = MediaPlayer.create(cont, R.raw.sound);
+//            mp.start();
+//            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                public void onCompletion(MediaPlayer player) {
+//                    player.release();
+//                }
+//            });
+//        }
 
     }
 
@@ -88,8 +88,8 @@ public class MqttSub implements MqttCallback {
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         System.err.println("delivery complete");
-    }
 
+    }
 
 }
 

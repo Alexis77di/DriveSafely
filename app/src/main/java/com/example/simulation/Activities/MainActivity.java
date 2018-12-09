@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+
         networkChangeReceiver = new NetworkChangeReceiver();
 //        eegTransmitter = new EegTransmitter();
         accelero = new AccelerometerListener(this);
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
         //---------------------------Sound Event-------------------------//
         btnSound = findViewById(R.id.btnSound);
-        final MediaPlayer mp = MediaPlayer.create(this, R.raw.alarm);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.sound);
         btnSound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,12 +156,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         accelero.register();
+
+
+
+
 
         //-------------------Internet Connectivity------------------------------------//
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeReceiver, intentFilter);
+
     }
 
     @Override
