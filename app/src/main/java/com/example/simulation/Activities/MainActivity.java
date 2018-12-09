@@ -43,7 +43,7 @@ import com.example.simulation.util.NetworkChangeReceiver;
 
 public class MainActivity extends AppCompatActivity {
     public String ip_port = "tcp://192.168.1.3:1883"; //by default
-    public long rate = 4000; //by default
+    public long rate = 10000; //by default
     private MqttSub subscriber;
     private MqttPublisher publisher;
 
@@ -69,7 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         networkChangeReceiver = new NetworkChangeReceiver();
-//        eegTransmitter = new EegTransmitter();
+
+//        eegTransmitter = new EegTransmitter(getApplicationContext());
+//        eegTransmitter.execute();
+
         accelero = new AccelerometerListener(this);
 
         //----------------Listener for the GPS Location-----------------------//
@@ -248,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams r = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
-                input1.setText("4000");
+                input1.setText("10000");
                 input1.setLayoutParams(r);
                 alertDialog1.setView(input1);
 

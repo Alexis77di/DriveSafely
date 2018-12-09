@@ -81,7 +81,6 @@ public class MqttSub {
                 mp.start();
                 mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer player) {
-                        // mp.stop();
                         player.release();
                     }
                 });
