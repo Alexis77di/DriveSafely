@@ -35,12 +35,17 @@ import android.widget.Toast;
 import com.example.simulation.Listeners.AccelerometerListener;
 import com.example.simulation.Listeners.MyLocationListener;
 import com.example.simulation.R;
+import com.example.simulation.util.DriveSafely;
 import com.example.simulation.util.EegTransmitter;
+import com.example.simulation.util.MqttPublisher;
+import com.example.simulation.util.MqttSub;
 import com.example.simulation.util.NetworkChangeReceiver;
 
 public class MainActivity extends AppCompatActivity {
-    public String port_Ip = "tcp://192.168.1.3:1883"; //by default
+    public String ip_port = "tcp://192.168.1.3:1883"; //by default
     public long rate = 4000; //by default
+    private MqttSub subscriber;
+    private MqttPublisher publisher;
 
 
     //--FlashLight--//
@@ -80,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
+
+        publisher = new MqttPublisher();
+        subscriber = new MqttSub();
+        subscriber.main(DriveSafely.getMacAddr(), ip_port, getApplicationContext());
+
         final Handler mHandler = new Handler();
         final Runnable mStatusChecker = new Runnable() {
             TextView xText = findViewById(R.id.xText);
@@ -92,8 +102,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 updateScreen();
-//              sendData();
+                sendData();
                 mHandler.postDelayed(this, rate);
+            }
+
+            private void sendData() {
+                publisher.main(DriveSafely.getMacAddr(), "", ip_port);
+
             }
 
             private void updateScreen() {
@@ -160,9 +175,6 @@ public class MainActivity extends AppCompatActivity {
         accelero.register();
 
 
-
-
-
         //-------------------Internet Connectivity------------------------------------//
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -220,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // click listener on the alert box
                     public void onClick(DialogInterface dialog, int which) {
-                        port_Ip = input.getText().toString();
+                        ip_port = input.getText().toString();
                         dialog.dismiss();
                     }
                 });

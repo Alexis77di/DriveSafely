@@ -7,13 +7,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MqttPublisher {
-    public String topic;
 
-    public void main(String topic, String port_ip) {
-        this.topic = topic;
-        String content = "My Message";
+    public void main(String topic, String content, String broker) {
         int qos = 2;
-        String broker = port_ip;
         String clientId = "ΜyclientidAndroid";
         MemoryPersistence persistence = new MemoryPersistence();
 
