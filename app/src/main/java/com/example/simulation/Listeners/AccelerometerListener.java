@@ -35,6 +35,11 @@ public class AccelerometerListener implements SensorEventListener {
         z = event.values[2];
     }
 
+    @Override
+    public String toString() {
+        return "" + x + "," + y + "," + z;
+    }
+
     public void register() {
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }

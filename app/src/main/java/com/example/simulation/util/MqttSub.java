@@ -2,9 +2,7 @@ package com.example.simulation.util;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.content.Context;
 
-import com.example.simulation.Activities.MainActivity;
 import com.example.simulation.R;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -65,22 +63,22 @@ public class MqttSub implements MqttCallback {
     }
 
     @Override
-    public void messageArrived(String topic, final MqttMessage message) throws Exception {
+    public void messageArrived(String topic, final MqttMessage message) {
         System.out.println("topic: " + topic);
         final String mes = new String(message.getPayload());
         System.out.println("message: " + mes);
 
 
-//        Context cont = MainActivity.ma.getApplicationContext();
-//        if (mes.equals("alarm")) {
-//            final MediaPlayer mp = MediaPlayer.create(cont, R.raw.sound);
-//            mp.start();
-//            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//                public void onCompletion(MediaPlayer player) {
-//                    player.release();
-//                }
-//            });
-//        }
+        if (mes.equals("alarm")) {
+            final MediaPlayer mp = MediaPlayer.create(context, R.raw.sound);
+            mp.start();
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer player) {
+                    // mp.stop();
+                    player.release();
+                }
+            });
+        }
 
     }
 

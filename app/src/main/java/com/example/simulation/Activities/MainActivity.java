@@ -107,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void sendData() {
-                publisher.main(DriveSafely.getMacAddr(), "", ip_port);
+                String content = DriveSafely.getMacAddr() + "/" + accelero.toString() + "/" + locationListener.getLatitude() + "/" + locationListener.getLongtitude();
+
+                publisher.main(DriveSafely.getMacAddr(), content, ip_port);
 
             }
 
