@@ -87,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         publisher = new MqttPublisher();
-        subscriber = new MqttSub();
-        subscriber.main(DriveSafely.getMacAddr(), ip_port, getApplicationContext());
+        subscriber = new MqttSub(ip_port, DriveSafely.getMacAddr(), getApplicationContext());
+        subscriber.subscribe();
 
         final Handler mHandler = new Handler();
         final Runnable mStatusChecker = new Runnable() {
