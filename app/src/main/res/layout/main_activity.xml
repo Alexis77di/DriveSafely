@@ -96,7 +96,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/yText"
+            android:layout_alignTop="@+id/xText"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:text="@string/m_s2"
@@ -106,7 +106,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/xText"
+            android:layout_alignBottom="@+id/yText"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:text="@string/m_s2"
@@ -146,6 +146,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/Location"
+            android:layout_marginTop="19dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp" />
+
+        <TextView
+            android:id="@+id/csvText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/locationText"
             android:layout_marginTop="19dp"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="14sp"

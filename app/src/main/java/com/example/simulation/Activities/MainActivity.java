@@ -70,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         networkChangeReceiver = new NetworkChangeReceiver();
 
-//        eegTransmitter = new EegTransmitter(getApplicationContext());
-//        eegTransmitter.execute();
+        eegTransmitter = new EegTransmitter(getApplicationContext().getAssets());
 
         accelero = new AccelerometerListener(this);
 
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
 
-        publisher = new MqttPublisher();
+        publisher = new MqttPublisher(ip_port, DriveSafely.getMacAddr());
         subscriber = new MqttSub(ip_port, DriveSafely.getMacAddr(), getApplicationContext());
         subscriber.subscribe();
 
@@ -99,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             TextView yText = findViewById(R.id.yText);
             TextView zText = findViewById(R.id.zText);
             TextView locationText = findViewById(R.id.locationText);
+            TextView csvText = findViewById(R.id.csvText);
 
             boolean isGpsEnabled = false;
 
@@ -110,10 +110,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void sendData() {
-                String content = DriveSafely.getMacAddr() + "/" + accelero.toString() + "/" + locationListener.getLatitude() + "/" + locationListener.getLongtitude();
-
-                publisher.main(DriveSafely.getMacAddr(), content, ip_port);
-
+                publisher.main(DriveSafely.getMacAddr() + "/" + accelero.toString() + "/" + locationListener.toString() + "/" + eegTransmitter.getLine());
             }
 
             private void updateScreen() {
@@ -122,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 yText.setText(String.valueOf(accelero.getY()));
                 zText.setText(String.valueOf(accelero.getZ()));
                 //location
-                locationText.setText(getString(R.string.gps, locationListener.getLatitude(), locationListener.getLongtitude()));
+                locationText.setText(locationListener.toString());
                 if (isGpsEnabled != locationListener.isGpsEnabled()) {
                     isGpsEnabled = locationListener.isGpsEnabled();
                     Context context = getApplicationContext();
@@ -134,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
                         context.startActivity(i);
                     }
                 }
+                //csv data
+                eegTransmitter.nextLine();
+                csvText.setText(eegTransmitter.getLine());
             }
         };
         mStatusChecker.run();
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setText("tcp://192.168.1.2:1883");
+                input.setText(ip_port);
                 input.setLayoutParams(lp);
                 alertDialog.setView(input);
 
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams r = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
-                input1.setText("10000");
+                input1.setText(String.valueOf(rate));
                 input1.setLayoutParams(r);
                 alertDialog1.setView(input1);
 

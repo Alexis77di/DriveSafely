@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.annotation.NonNull;
 
 public class AccelerometerListener implements SensorEventListener {
     private SensorManager sensorManager;
@@ -35,6 +36,7 @@ public class AccelerometerListener implements SensorEventListener {
         z = event.values[2];
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "" + x + "," + y + "," + z;

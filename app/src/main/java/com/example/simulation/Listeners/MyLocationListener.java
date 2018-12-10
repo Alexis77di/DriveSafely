@@ -3,6 +3,7 @@ package com.example.simulation.Listeners;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 public class MyLocationListener implements LocationListener {
     private double latitude;
@@ -29,12 +30,10 @@ public class MyLocationListener implements LocationListener {
         gpsEnabled = false;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongtitude() {
-        return longtitude;
+    @NonNull
+    @Override
+    public String toString() {
+        return "" + latitude + "," + longtitude;
     }
 
     public boolean isGpsEnabled() {
