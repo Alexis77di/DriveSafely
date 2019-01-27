@@ -11,14 +11,14 @@ public class EegTransmitter {
     private final AssetManager assets;
     private Random r;
 
-    String content = "";
+    private String content = "";
 
 
     public EegTransmitter(AssetManager assets) {
         this.assets = assets;
         r = new Random();
 
-        nextFile();
+
     }
 
     public void nextFile() {
