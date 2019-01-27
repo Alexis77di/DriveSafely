@@ -27,11 +27,12 @@ public class EegTransmitter {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(assets.open(file)));
             String line = br.readLine();
-            content = "";
+            StringBuilder sb = new StringBuilder();
             while (line != null) {
-                content += line;
+                sb.append(line);
                 line = br.readLine();
             }
+            content = sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
