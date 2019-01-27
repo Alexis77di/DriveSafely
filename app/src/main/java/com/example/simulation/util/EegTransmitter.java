@@ -9,27 +9,27 @@ import java.util.Random;
 
 public class EegTransmitter {
     private final AssetManager assets;
-    private String line;
-    private String file;
-    private BufferedReader br;
     private Random r;
+
+    String content = "";
+
 
     public EegTransmitter(AssetManager assets) {
         this.assets = assets;
         r = new Random();
 
-        try {
-            nextFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        nextFile();
     }
 
-    public void nextLine() {
+    public void nextFile() {
         try {
-            line = br.readLine();
-            if (line == null) {
-                nextFile();
+            String file = randomFile();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(assets.open(file)));
+            String line = br.readLine();
+            content = "";
+            while (line != null) {
+                content += line;
                 line = br.readLine();
             }
         } catch (IOException e) {
@@ -37,22 +37,13 @@ public class EegTransmitter {
         }
     }
 
-    private void nextFile() throws IOException {
-        file = randomFile();
-        br = new BufferedReader(new InputStreamReader(assets.open(file)));
-        br.readLine();
-    }
-
     private String randomFile() throws IOException {
         String[] files = assets.list("csv");
         return "csv/" + files[r.nextInt(files.length)];
     }
 
-    public String getFile() {
-        return file;
+    public String getContent() {
+        return content;
     }
 
-    public String getLine() {
-        return line;
-    }
 }

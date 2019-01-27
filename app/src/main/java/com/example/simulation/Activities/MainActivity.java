@@ -38,13 +38,13 @@ import com.example.simulation.R;
 import com.example.simulation.util.DriveSafely;
 import com.example.simulation.util.EegTransmitter;
 import com.example.simulation.util.MqttPublisher;
-import com.example.simulation.util.MqttSub;
+import com.example.simulation.util.MqttSubcriber;
 import com.example.simulation.util.NetworkChangeReceiver;
 
 public class MainActivity extends AppCompatActivity {
-    public String ip_port = "tcp://192.168.1.3:1883"; //by default
+    public String ip_port = "tcp://192.168.1.10"; //by default   "tcp://192.168.43.4:1883"
     public long rate = 10000; //by default
-    private MqttSub subscriber;
+    private MqttSubcriber subscriber;
     private MqttPublisher publisher;
 
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         publisher = new MqttPublisher(ip_port, DriveSafely.getMacAddr());
-        subscriber = new MqttSub(ip_port, DriveSafely.getMacAddr(), getApplicationContext());
+        subscriber = new MqttSubcriber(ip_port, DriveSafely.getMacAddr(), getApplicationContext(), this);
         subscriber.subscribe();
 
         final Handler mHandler = new Handler();
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void sendData() {
-                publisher.main(DriveSafely.getMacAddr() + "/" + accelero.toString() + "/" + locationListener.toString() + "/" + eegTransmitter.getLine());
+                publisher.main(DriveSafely.getMacAddr() + "/" + accelero.toString() + "/" + locationListener.toString() + "/" + eegTransmitter.getContent());
             }
 
             private void updateScreen() {
@@ -132,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 //csv data
-                eegTransmitter.nextLine();
-                csvText.setText(eegTransmitter.getLine());
+                eegTransmitter.nextFile();
+                csvText.setText(eegTransmitter.getContent());
             }
         };
         mStatusChecker.run();
@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         //---------------------------Sound Event-------------------------//
         btnSound = findViewById(R.id.btnSound);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.sound);
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     protected void onResume() {
@@ -312,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
     //-------------This function is used in order to unable the flashlight----------//
     @TargetApi(Build.VERSION_CODES.M)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void flashLightOn() {
+    public void flashLightOn() {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
         try {
@@ -326,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
     //-------------This function is used in order to disable the flashlight----------//
     @TargetApi(Build.VERSION_CODES.M)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void flashLightOff() {
+    public void flashLightOff() {
         CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
             String cameraId = cameraManager.getCameraIdList()[0];
