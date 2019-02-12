@@ -29,9 +29,10 @@ public class EegTransmitter {
             String line = br.readLine();
             StringBuilder sb = new StringBuilder();
             while (line != null) {
-                sb.append(line);
+                sb.append(line).append("\n");
                 line = br.readLine();
             }
+            sb.append("/").append(file);
             content = sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
