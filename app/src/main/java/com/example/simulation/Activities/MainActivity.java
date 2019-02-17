@@ -42,7 +42,7 @@ import com.example.simulation.util.MqttSubcriber;
 import com.example.simulation.util.NetworkChangeReceiver;
 
 public class MainActivity extends AppCompatActivity {
-    public String ip_port = "tcp://192.168.1.2:1883"; //by default   "tcp://192.168.43.4:1883"
+    public String ip_port = "tcp://192.168.43.4:1883"; //by default   "tcp://192.168.43.4:1883"
     public long rate = 4000; //by default
     private MqttSubcriber subscriber;
     private MqttPublisher publisher;
