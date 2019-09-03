@@ -17,8 +17,6 @@ public class EegTransmitter {
     public EegTransmitter(AssetManager assets) {
         this.assets = assets;
         r = new Random();
-
-
     }
 
     public void nextFile() {
